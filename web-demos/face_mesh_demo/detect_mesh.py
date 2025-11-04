@@ -22,6 +22,31 @@ except ImportError:
     sys.exit(1)
 
 
+# Facial landmark indices (InsightFace 5-point landmarks)
+LEFT_EYE = 0
+RIGHT_EYE = 1
+NOSE = 2
+LEFT_MOUTH = 3
+RIGHT_MOUTH = 4
+
+# Color definitions for landmarks
+LANDMARK_COLORS = {
+    LEFT_EYE: (255, 0, 0),      # Blue
+    RIGHT_EYE: (255, 0, 0),     # Blue
+    NOSE: (0, 255, 0),          # Green
+    LEFT_MOUTH: (0, 0, 255),    # Red
+    RIGHT_MOUTH: (0, 0, 255),   # Red
+}
+
+LANDMARK_NAMES = {
+    LEFT_EYE: "left eye",
+    RIGHT_EYE: "right eye",
+    NOSE: "nose",
+    LEFT_MOUTH: "left mouth",
+    RIGHT_MOUTH: "right mouth",
+}
+
+
 def detect_face_mesh_standalone(image_path, output_path=None):
     """
     Detect face mesh from an image file.
@@ -71,27 +96,24 @@ def detect_face_mesh_standalone(image_path, output_path=None):
             print(f"  Landmarks: {len(kps)} keypoints")
             
             for i, (x, y) in enumerate(kps):
-                # Different colors for different landmarks
-                if i == 0 or i == 1:  # Eyes
-                    color = (255, 0, 0)  # Blue
-                    label = "eye"
-                elif i == 2:  # Nose
-                    color = (0, 255, 0)  # Green
-                    label = "nose"
-                else:  # Mouth corners
-                    color = (0, 0, 255)  # Red
-                    label = "mouth"
+                # Get color and label based on landmark type
+                color = LANDMARK_COLORS.get(i, (128, 128, 128))
+                label = LANDMARK_NAMES.get(i, f"landmark {i}")
                 
                 cv2.circle(output, (x, y), 3, color, -1)
-                print(f"    {label} {i}: ({x}, {y})")
+                print(f"    {label}: ({x}, {y})")
             
-            # Draw connections
-            cv2.line(output, tuple(kps[0]), tuple(kps[1]), (255, 255, 0), 1)
-            cv2.line(output, tuple(kps[2]), tuple(kps[0]), (255, 255, 0), 1)
-            cv2.line(output, tuple(kps[2]), tuple(kps[1]), (255, 255, 0), 1)
-            cv2.line(output, tuple(kps[3]), tuple(kps[4]), (255, 255, 0), 1)
-            cv2.line(output, tuple(kps[2]), tuple(kps[3]), (255, 255, 0), 1)
-            cv2.line(output, tuple(kps[2]), tuple(kps[4]), (255, 255, 0), 1)
+            # Draw topology connections
+            # Connect eyes
+            cv2.line(output, tuple(kps[LEFT_EYE]), tuple(kps[RIGHT_EYE]), (255, 255, 0), 1)
+            # Connect nose to eyes
+            cv2.line(output, tuple(kps[NOSE]), tuple(kps[LEFT_EYE]), (255, 255, 0), 1)
+            cv2.line(output, tuple(kps[NOSE]), tuple(kps[RIGHT_EYE]), (255, 255, 0), 1)
+            # Connect mouth corners
+            cv2.line(output, tuple(kps[LEFT_MOUTH]), tuple(kps[RIGHT_MOUTH]), (255, 255, 0), 1)
+            # Connect nose to mouth
+            cv2.line(output, tuple(kps[NOSE]), tuple(kps[LEFT_MOUTH]), (255, 255, 0), 1)
+            cv2.line(output, tuple(kps[NOSE]), tuple(kps[RIGHT_MOUTH]), (255, 255, 0), 1)
         
         # Add face number label
         cv2.putText(output, f'Face {idx+1}', (bbox[0], bbox[1]-10),

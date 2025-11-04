@@ -16,9 +16,7 @@ fi
 # Check if virtual environment exists
 if [ ! -d "venv" ]; then
     echo "Virtual environment not found. Creating one..."
-    python3 -m venv venv
-    
-    if [ $? -ne 0 ]; then
+    if ! python3 -m venv venv; then
         echo "Error: Failed to create virtual environment"
         echo "Please install python3-venv: sudo apt install python3-venv"
         exit 1
@@ -31,25 +29,27 @@ source venv/bin/activate
 
 # Check if dependencies are installed
 echo "Checking dependencies..."
-python3 -c "import gradio" 2>/dev/null
-if [ $? -ne 0 ]; then
+if ! python3 -c "import gradio" 2>/dev/null; then
     echo "Dependencies not installed. Installing now..."
     pip install --upgrade pip
-    pip install -r requirements.txt
+    
+    if ! pip install -r requirements.txt; then
+        echo "Error: Failed to install dependencies"
+        exit 1
+    fi
     
     # Install InsightFace from local package
     if [ -d "../../python-package" ]; then
         echo "Installing InsightFace from local package..."
-        pip install -e ../../python-package/
+        if ! pip install -e ../../python-package/; then
+            echo "Warning: Failed to install local InsightFace package"
+            echo "Installing InsightFace from PyPI..."
+            pip install insightface
+        fi
     else
         echo "Warning: Could not find python-package directory"
         echo "Installing InsightFace from PyPI..."
         pip install insightface
-    fi
-    
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to install dependencies"
-        exit 1
     fi
 fi
 

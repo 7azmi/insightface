@@ -6,42 +6,31 @@ This script verifies that all dependencies are installed correctly.
 
 import sys
 
+# Define package mappings
+REQUIRED_PACKAGES = {
+    "numpy": "numpy",
+    "cv2": "opencv-python",
+    "gradio": "gradio",
+    "insightface": "insightface",
+    "onnxruntime": "onnxruntime",
+}
+
+
 def check_imports():
     """Check if all required packages can be imported"""
     print("=" * 60)
     print("Testing Face Mesh Demo Dependencies")
     print("=" * 60)
     
-    packages = [
-        ("numpy", "numpy"),
-        ("cv2", "opencv-python"),
-        ("gradio", "gradio"),
-        ("insightface", "insightface"),
-        ("onnxruntime", "onnxruntime"),
-    ]
-    
     all_ok = True
     
-    for module_name, package_name in packages:
+    for module_name, package_name in REQUIRED_PACKAGES.items():
         try:
-            if module_name == "cv2":
-                import cv2
-                version = cv2.__version__
-            elif module_name == "numpy":
-                import numpy
-                version = numpy.__version__
-            elif module_name == "gradio":
-                import gradio
-                version = gradio.__version__
-            elif module_name == "insightface":
-                import insightface
-                version = insightface.__version__
-            elif module_name == "onnxruntime":
-                import onnxruntime
-                version = onnxruntime.__version__
-            
+            # Dynamically import the module
+            module = __import__(module_name)
+            version = getattr(module, '__version__', 'unknown')
             print(f"✓ {package_name:20s} - OK (version: {version})")
-        except ImportError as e:
+        except ImportError:
             print(f"✗ {package_name:20s} - MISSING")
             print(f"  Install with: pip install {package_name}")
             all_ok = False
