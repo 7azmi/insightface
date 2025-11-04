@@ -1,0 +1,12 @@
+# Web interface
+gradio>=4.0.0
+
+# Image processing
+opencv-python>=4.8.0
+numpy>=1.22.0
+
+# ONNX Runtime for model inference
+onnxruntime>=1.15.0
+
+# InsightFace - Install from local package
+# Run: pip install -e ../../python-package/
