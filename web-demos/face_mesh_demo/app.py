@@ -163,11 +163,20 @@ with gr.Blocks(title="Face Mesh Topology Demo - InsightFace") as demo:
             outputs=[single_output, single_info]
         )
         
-        gr.Examples(
-            examples=[],
-            inputs=single_input,
-            label="Example Images (Add your own images to test)"
-        )
+        # Get example images
+        example_dir = Path(__file__).parent / "examples"
+        example_images = []
+        if example_dir.exists():
+            example_images = [str(f) for f in example_dir.glob("*.jpg")]
+        
+        if example_images:
+            gr.Examples(
+                examples=example_images,
+                inputs=single_input,
+                label="Example Images"
+            )
+        else:
+            gr.Markdown("*No example images available. Upload your own images to test.*")
     
     with gr.Tab("Multiple Images"):
         gr.Markdown("Upload up to 3 images to process them together")

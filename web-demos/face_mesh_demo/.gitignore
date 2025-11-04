@@ -36,9 +36,15 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Gradio cache
+# Gradio cache and outputs
 gradio_cached_examples/
 flagged/
+outputs/
+*.tmp
 
 # Logs
 *.log
+
+# Example outputs (keep example inputs)
+examples/*_output.*
+examples/result_*

@@ -104,7 +104,26 @@ python3 -c "import gradio; print('Gradio version:', gradio.__version__)"
 
 ## 🚀 Running the Demo
 
-### Start the Web Server
+### Quick Start (Automated)
+
+The easiest way to run the demo is using the provided start script:
+
+```bash
+# Navigate to the demo directory
+cd ~/insightface/web-demos/face_mesh_demo
+
+# Run the quick start script
+./start_demo.sh
+```
+
+This script will:
+- Create a virtual environment (if not exists)
+- Install all dependencies automatically
+- Start the web server
+
+### Manual Start
+
+Alternatively, you can start the demo manually:
 
 ```bash
 # Make sure you're in the face_mesh_demo directory and virtual environment is activated
@@ -141,6 +160,27 @@ Running on public URL: https://xxxxx.gradio.live (if sharing is enabled)
 3. Click "🔍 Detect Face Mesh in All Images"
 4. View all results simultaneously
 
+### Alternative: Command-Line Usage
+
+For batch processing or testing without the web interface, use the standalone script:
+
+```bash
+# Process a single image
+python3 detect_mesh.py examples/t1.jpg
+
+# Process with custom output path
+python3 detect_mesh.py image.jpg -o result.jpg
+
+# The output will be saved as 'image_mesh.jpg' by default
+```
+
+This is useful for:
+- Testing the installation
+- Batch processing multiple images
+- Integration into other workflows
+- Command-line automation
+4. View all results simultaneously
+
 ### Stop the Server
 
 To stop the demo server:
@@ -157,9 +197,15 @@ deactivate
 
 ```
 face_mesh_demo/
-├── app.py              # Main application file
+├── app.py              # Main web application (Gradio interface)
+├── detect_mesh.py      # Standalone command-line script
+├── test_setup.py       # Dependency checker and test script
+├── start_demo.sh       # Quick start script (automated setup)
 ├── requirements.txt    # Python dependencies
-└── README.md          # This file
+├── README.md          # This file (installation & usage guide)
+├── examples/          # Example images for testing
+│   └── t1.jpg         # Sample image
+└── .gitignore         # Git ignore rules
 ```
 
 ## 🔧 Troubleshooting
